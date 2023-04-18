@@ -55,7 +55,7 @@ public:
     }
  void printArray()
     {
-        for (int i = length-1; i >= 0; ++i)
+        for (int i = length-1; i >= 0; i--)
             cout << arr[i] << " ";
         cout << endl;
     }
