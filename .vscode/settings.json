@@ -36,6 +36,7 @@
   "files.associations": {
     "*.cpp": "cpp",
     "iostream": "cpp",
-    "new": "cpp"
+    "new": "cpp",
+    "queue": "cpp"
   }
 }

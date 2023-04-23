@@ -1,125 +1,132 @@
 #include <iostream>
+#include <queue>
 
-class Node
+template <typename T>
+class BinaryTreeNode
 {
 public:
-    int data;
-    Node *next;
-    Node(int data)
+    T data;
+    BinaryTreeNode<T> *left;
+    BinaryTreeNode<T> *right;
+
+    BinaryTreeNode(T data)
     {
         this->data = data;
-        this->next = NULL;
+        left = NULL;
+        right = NULL;
+    }
+
+    ~BinaryTreeNode()
+    {
+        if (left)
+            delete left;
+        if (right)
+            delete right;
     }
 };
 
 using namespace std;
-/****************************************************************
-
-    Following is the class structure of the Node class:
-
-        class Node
-        {
-        public:
-                int data;
-                Node *next;
-                Node(int data)
-                {
-                        this->data = data;
-                        this->next = NULL;
-                }
-        };
-
-*****************************************************************/
-
-Node *mergeTwoSortedLinkedLists(Node *head1, Node *head2)
+void printdepth(BinaryTreeNode<int> *root, int k)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+    if (k == 0)
+    {
+        cout << root->data << endl;
+        return;
+    }
+    printdepth(root->left, k - 1);
+    printdepth(root->right, k - 1);
+}
+void nodesAtDistanceK(BinaryTreeNode<int> *root, int node, int k)
 {
     // Write your code here
-    Node *FT = NULL;
-    Node *FH = NULL;
-    if (head1->data < head2->data)
+    if (root == NULL)
     {
-        FH = head1;
-        FT = head1;
-        head1 = head1->next;
+        return;
     }
-    else
-    {
-        FH = head2;
-        FT = head2;
-        head2 = head2->next;
-    }
-    while (head1->next != NULL && head2->next != NULL)
-    {
-        if (head1->data > head2->data)
-        {
-            FT->next = head2;
-            FT = head2;
-            head2 = head2->next;
+    queue<BinaryTreeNode<int>*> q;
+    queue<int> R;
+    R.push(0);
+    q.push(root);
+  if(root->data==node){
+    while(!q.empty()){
+        int k1=R.front();
+        R.pop();
+        if(k1==1){
+            printdepth(q.front()->left,k-q.size()-1);
         }
-        else
-        {
-            FT->next = head1;
-            FT = head1;
-            head1 = head1->next;
+        if(k1==2){
+            printdepth(q.front()->right,k-q.size()-1);
         }
+        if(k1==0&&R.front()==1){
+            printdepth(q.front()->right,k-q.size()-1);
+        }
+        if(k1==0&&R.front()==2){
+            printdepth(q.front()->left,k-q.size()-1);
+        }
+        q.pop();
     }
-    if (head2->next == NULL)
-    {
-        head1->next = head2;
-        return FT;
+    return;
+      
+  }
+    if(root->left!=NULL){
+            q.push(q.front()->left);
+            R.push(1);
     }
-    else
-    {
-        if (head1->next == NULL)
-            head2->next = head1;
-        return FT;
+    if(root->right!=NULL){
+            q.push(q.front()->right);
+            R.push(2);
     }
+    nodesAtDistanceK(root->left,node,k);
+    nodesAtDistanceK(root->right,node,k);
+
 }
 
-Node *takeinput()
+BinaryTreeNode<int> *takeInput()
 {
-    int data;
-    cin >> data;
-    Node *head = NULL, *tail = NULL;
-    while (data != -1)
-    {
-        Node *newNode = new Node(data);
-        if (head == NULL)
-        {
-            head = newNode;
-            tail = newNode;
-        }
-        else
-        {
-            tail->next = newNode;
-            tail = newNode;
-        }
-        cin >> data;
-    }
-    return head;
-}
+    int rootData;
 
-void print(Node *head)
-{
-    Node *temp = head;
-    while (temp != NULL)
+    cin >> rootData;
+    if (rootData == -1)
     {
-        cout << temp->data << " ";
-        temp = temp->next;
+        return NULL;
     }
-    cout << endl;
+    BinaryTreeNode<int> *root = new BinaryTreeNode<int>(rootData);
+    queue<BinaryTreeNode<int> *> q;
+    q.push(root);
+    while (!q.empty())
+    {
+        BinaryTreeNode<int> *currentNode = q.front();
+        q.pop();
+        int leftChild, rightChild;
+
+        cin >> leftChild;
+        if (leftChild != -1)
+        {
+            BinaryTreeNode<int> *leftNode = new BinaryTreeNode<int>(leftChild);
+            currentNode->left = leftNode;
+            q.push(leftNode);
+        }
+
+        cin >> rightChild;
+        if (rightChild != -1)
+        {
+            BinaryTreeNode<int> *rightNode = new BinaryTreeNode<int>(rightChild);
+            currentNode->right = rightNode;
+            q.push(rightNode);
+        }
+    }
+    return root;
 }
 
 int main()
 {
-    int t;
-    cin >> t;
-    while (t--)
-    {
-        Node *head1 = takeinput();
-        Node *head2 = takeinput();
-        Node *head3 = mergeTwoSortedLinkedLists(head1, head2);
-        print(head3);
-    }
-    return 0;
+    BinaryTreeNode<int> *root = takeInput();
+    int targetNode, k;
+    cin >> targetNode >> k;
+    nodesAtDistanceK(root, targetNode, k);
+    delete root;
 }
