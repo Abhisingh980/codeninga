@@ -1,10 +1,9 @@
 #include <iostream>
 #include <map>
-#include <queue>
 #include <list>
 using namespace std;
 template <typename T>
-class BFS
+class DFS
 {
     map<T, list<T>> ver;
 
@@ -14,32 +13,29 @@ public:
         ver[x].push_back(y);
         ver[y].push_back(x);
     }
-    void Bfs(T src)
-    {
-        queue<T> q;
-        map<T, int> visite;
-        //un waited graph
-        q.push(src);
-        visite[src] = true;
-        while (!q.empty())
-        {
-            T node = q.front();
-            cout << node << " ";
-            q.pop();
-            for (auto nbr : ver[node])
-            {
-                if (!visite[nbr])
-                {
-                    q.push(nbr);
-                    visite[nbr] = true;//mark as visited
-                }
+    void dfshelper(T src,map<T,bool>&visite){
+         cout<<src<<" ";
+         visite[src]=true;
+         for(T nbr:ver[src]){
+            if(!visite[nbr]){
+                dfshelper(nbr,visite);
             }
+         }
+    }
+    void Dfs(T src)
+    {
+        map<T, bool> visite;
+        for(auto p:ver){
+            T node=p.first;
+            visite[node]=false;
         }
+   //call functio 
+   dfshelper(src,visite); 
     }
 };
 int main()
 {
-    BFS<int> g;
+    DFS<int> g;
     while (1)
     {
         cout << "1.Enter the edge: " << endl;
@@ -51,16 +47,16 @@ int main()
         {
         case 1:
             int x, y;
-            cout<<"edge vertices srpreade by space : ";
+            cout << "edge vertices srpreade by space : ";
             cin >> x >> y;
             g.addEdge(x, y);
             break;
         case 2:
             int z;
-           cout<<" enter the source node : ";
-           cin>>z;
-            g.Bfs(z);
-            cout<<endl;
+            cout << " enter the source node : ";
+            cin >> z;
+            g.Dfs(z);
+            cout << endl;
             break;
         case 3:
             exit(0);
