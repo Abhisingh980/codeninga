@@ -25,6 +25,7 @@ public:
     void insert(int data)
     {
         pq.push_back(data);
+        //up heapify 
         int childindex = pq.size() - 1;
         while (childindex > 0)
         {
@@ -51,6 +52,7 @@ public:
         int ans = pq[0];
         pq[0] = pq[pq.size() - 1];
         pq.pop_back();
+        //down heapify
         int pi = 0;
         int lci=2*pi+1;
         int rci=2*pi+2;
